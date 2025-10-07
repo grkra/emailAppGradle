@@ -21,7 +21,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#ptionsAction" text="Options" />
+                        <MenuItem mnemonicParsing="false" onAction="#optionsAction" text="Options" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">

@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import krawczyk.grzegorz.views.ViewFactory;
 
 public class Launcher extends Application {
 
@@ -15,12 +16,16 @@ public class Launcher extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-//        Button parent = new Button("AAA");
-        Parent parent = FXMLLoader.load(getClass().getResource("/fxml_files/MainWindow.fxml"));
 
-        Scene scene = new Scene(parent);
+        ViewFactory viewFactory = new ViewFactory(new EmailManager());
 
-        stage.setScene(scene);
-        stage.show();
+        viewFactory.showLoginWindow();
+
+//        Parent parent = FXMLLoader.load(getClass().getResource("/fxml_files/MainWindow.fxml"));
+//
+//        Scene scene = new Scene(parent);
+//
+//        stage.setScene(scene);
+//        stage.show();
     }
 }
