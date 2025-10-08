@@ -5,14 +5,17 @@ import krawczyk.grzegorz.views.ViewFactory;
 
 public abstract class BaseController {
 
-    private EmailManager emailManager;
-    private ViewFactory viewFactory;
-
+    protected EmailManager emailManager;
+    protected ViewFactory viewFactory;
     private String fxmlName;
 
     public BaseController(EmailManager emailManager, ViewFactory viewFactory, String fxmlName) {
         this.emailManager = emailManager;
         this.viewFactory = viewFactory;
         this.fxmlName = fxmlName;
+    }
+
+    public String getFxmlName() {
+        return fxmlName;
     }
 }

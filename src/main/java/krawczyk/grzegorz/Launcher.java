@@ -20,12 +20,5 @@ public class Launcher extends Application {
         ViewFactory viewFactory = new ViewFactory(new EmailManager());
 
         viewFactory.showLoginWindow();
-
-//        Parent parent = FXMLLoader.load(getClass().getResource("/fxml_files/MainWindow.fxml"));
-//
-//        Scene scene = new Scene(parent);
-//
-//        stage.setScene(scene);
-//        stage.show();
     }
 }
