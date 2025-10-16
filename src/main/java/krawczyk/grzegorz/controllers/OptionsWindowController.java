@@ -51,8 +51,8 @@ public class OptionsWindowController extends BaseController implements Initializ
         // brzydki sposób
         Stage stage = (Stage) this.fontSizePicker.getScene().getWindow();
 
-        // i zamykamy to okno
-        this.viewFactory.closeStage(stage);
+//        // i zamykamy to okno
+//        this.viewFactory.closeStage(stage);
     }
 
     @FXML

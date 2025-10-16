@@ -18,7 +18,7 @@ czyli kontroler jest ustawiany w factory-->
       <ChoiceBox fx:id="themePicker" layoutX="186.0" layoutY="155.0" prefHeight="26.0" prefWidth="254.0" />
       <Label layoutX="63.0" layoutY="101.0" prefHeight="18.0" prefWidth="102.0" text="Font select:" />
       <Label layoutX="63.0" layoutY="150.0" prefHeight="18.0" prefWidth="102.0" text="Color theme:" />
-      <Label layoutX="257.0" layoutY="54.0" text="Options" />
+      <Label layoutX="257.0" layoutY="54.0" prefHeight="16.0" prefWidth="87.0" styleClass="big" text="Options" />
       <Button layoutX="139.0" layoutY="305.0" mnemonicParsing="false" onAction="#applyButtonAction" text="Apply" />
       <Button layoutX="275.0" layoutY="305.0" mnemonicParsing="false" onAction="#cancelButtonAction" text="Cancel" />
    </children>

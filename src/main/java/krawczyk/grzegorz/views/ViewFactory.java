@@ -103,6 +103,8 @@ public class ViewFactory {
 
             // Based on value saved in fontSize css styleSheet is added to the scene
             scene.getStylesheets().add(getClass().getResource(FontSize.getCssPath(fontSize)).toExternalForm());
+
+            System.out.println(scene.getStylesheets());
         }
     }
 
@@ -141,6 +143,7 @@ public class ViewFactory {
 
         Scene scene = new Scene(parent);
         Stage stage = new Stage();
+        System.out.println("STYLES: " + scene.getStylesheets());
         stage.setScene(scene);
         stage.show();
 
