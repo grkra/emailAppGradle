@@ -16,10 +16,20 @@ import krawczyk.grzegorz.views.ViewFactory;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-// Interfejs Initalizable deklaruje metodę initialize() która pozwala zainicjalizować wartości pól
-// od razu po utworzeniu kontrolera
+
+/**
+ * Controller of Options window of the app.
+ */
 public class OptionsWindowController extends BaseController implements Initializable {
 
+    /**
+     * OptionsWindowController constructor.
+     * <hr></hr>
+     * It calls BaseController constructor.
+     * @param emailManager - an object of the class EmailManager.
+     * @param viewFactory - an object of the class ViewFactory.
+     * @param fxmlName - a String containing name of a fxml file with the extension.
+     */
     public OptionsWindowController(EmailManager emailManager, ViewFactory viewFactory, String fxmlName) {
         super(emailManager, viewFactory, fxmlName);
     }
@@ -30,106 +40,129 @@ public class OptionsWindowController extends BaseController implements Initializ
     @FXML
     private ChoiceBox<ColorTheme> themePicker;
 
+    /**
+     * Event listener triggered when Apply button is clicked.
+     * @param event - click on the Apply button.
+     */
     @FXML
     void applyButtonAction(ActionEvent event) {
-        // pobieramy aktualną ustawioną wartość z themePicker i zapisujemy
-        // do pola solorTheme (Enum) w viewFactory
-        // themePicker jest obiektem, więc po prostu przechowuje swoją aktualną wartość - nie musimy jej za każdym razem eksportować
+        // It gets value from themePicker (set in the window)
+        // and saves it to themePicker fielf (enum) in the viewFacotry.
+        // themePicker is an object, so it has it's value and it can be got - no need to export it.
         this.viewFactory.setColorTheme(themePicker.getValue());
 
 
-        // żeby w viewFactory ustawić fontSize (też enum) musimy pobrać aktualną wartość ze slidera
-        // (0, 1 lub 2 - wartości w slider są liczbowe), skonwertować na int
-        // i używając tego inta jako indeksu wybrać opcję z enuma
+        // Slider has numeral value (0, 1 or 2). To set fontSize property in the viewFactory (enum too)
+        // this value has to be converted to int,
+        // and then it is possible to select value from enum using this int as index.
         this.viewFactory.setFontSize(FontSize.values()[(int) fontSizePicker.getValue()]);
 
         this.viewFactory.updateStyles();
 
-        // nie mamy dostępu do stage zainicjalizowanego w viewFactory.showLoginWindow().
-        // ale mamy dostęp do każdego elementu interfejsu któremu daliśmy id.
-        // z elementu możemy pobrać scenę, a ze sceny okno - a to rzutujemy na Stage.
-        // brzydki sposób
+        // From the class there is no access to the Stage initialized in viewFacotry.showLoginWindow(),
+        // but it has access to eny interface element with id.
+        // From any element it is possible to get Scene (which contains that element), and from Scene, Stage.
+        // Ugly method.
         Stage stage = (Stage) this.fontSizePicker.getScene().getWindow();
 
-//        // i zamykamy to okno
+//        // Closing old window (Stage) - without closing window, application would display multiple windows.
 //        this.viewFactory.closeStage(stage);
     }
 
+    /**
+     * Event listener triggered when Cancel button is clicked.
+     * @param event - click on the Cancel button.
+     */
     @FXML
     void cancelButtonAction(ActionEvent event) {
-        // nie mamy dostępu do stage zainicjalizowanego w viewFactory.showLoginWindow().
-        // ale mamy dostęp do każdego elementu interfejsu któremu daliśmy id.
-        // z elementu możemy pobrać scenę, a ze sceny okno - a to rzutujemy na Stage.
-        // brzydki sposób
+        // From the class there is no access to the Stage initialized in viewFacotry.showLoginWindow(),
+        // but it has access to eny interface element with id.
+        // From any element it is possible to get Scene (which contains that element), and from Scene, Stage.
+        // Ugly method.
         Stage stage = (Stage) this.fontSizePicker.getScene().getWindow();
 
         // i zamykamy to okno
         this.viewFactory.closeStage(stage);
     }
 
-    // Metoda z interfejsu Initializable
-    // zostanie wywołana od razu po utworzeniu obiektu i ustawi wartości pól
+    // Method implemented from Initializable interface.
+    // It lets to initialize values of the fields exactly after initialization of an object,
+    // so they are already initialized when window is dislayed.
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setUpThemePicker();
         setUpSizePicker();
     }
 
+    /**
+     * Method sets (initializes) Pick Theme choicebox element when displaying the window.
+     */
     private void setUpThemePicker() {
-        // Metoda setItems() pozwala ustawić możliwe wartości elementu interfejsu graficznego
-        // setItems() wymaga przekazania jako argumentu obiektu klasy ObservableList,
-        // Który tworzymy z Enuma metodą FXCollections.observableArrayList().
-        // Czyli dzięki tej metodzie opcje z enuma automatycznie wyświetlą się w Selekcie w interfejsie
+        // setItems() method lets set possible values of an element of a graphical interface.
+        // It requires an object of the ObservableList class which is populated with Enum options with FXCollections.observableArrayList() method.
+        // With this method options from Enum are automatically displayed in the choicebox element in the window.
         this.themePicker.setItems(FXCollections.observableArrayList(ColorTheme.values()));
 
         // Metoda setValue() ustawia wartość domyślną elementu interfejsu
         // (tę, która będzie wybrana po wyświetleniu nowego okna).
         // Czyli dzięki tej metodzie domyślną (zaznaczoną) opcją w Selekcie w interfejsie będzie ta zapisana w viewFacotry.
+
+        // setValue() method sets default value of an element of a graphical interface
+        // (value which is selected when window is newly displayed).
+        // With this method default selected option in the choicebox is one saved in viewFacotry in colorTheme field.
         this.themePicker.setValue(viewFactory.getColorTheme());
     }
 
+    /**
+     * Method sets (initializes) Set Up Text Size slider element when displaying the window.
+     */
     private void setUpSizePicker() {
-        // Suwak w JavaFX służy do ustawiania liczby. Dlatego wartosci z Enum FontSize musimy przerobić na liczby.
+        // Slider in JavaFX is used to set Numerals. So options in Enum fontSize need to be transformed to numbers.
 
-        // Ustawiamy min. suwaka:
+        // Sets minimum value of the Slider:
         this.fontSizePicker.setMin(0);
-        // Jako max suwaka ustawiamy wielkość (liczbę opcji) enuma, zmiejszoną o 1
+        // As maximum value of the Slider number of options in Enum minus 1 is used:
         this.fontSizePicker.setMax(FontSize.values().length-1);
 
-        // Metoda setValue() ustawia wartość domyślną elementu interfejsu
-        // (tę, która będzie wybrana po wyświetleniu nowego okna).
-        // Czyli dzięki tej metodzie domyślną (wybraną) opcją w suwaku w interfejsie będzie indeks opcji zapisanej w viewFacotry.
-        // Enum ma specjalną metodę ordinal() która zwraca indeks opcji
+        // setValue() method sets default value of an element of a graphical interface
+        // (value which is selected when window is newly displayed).
+        // With this method default selected option in the slider is one saved in viewFacotry in fontSize field.
+        // Enum has ordinal() method which returns index of an option.
         this.fontSizePicker.setValue(viewFactory.getFontSize().ordinal());
 
-        // Ustawiamy główną podziałkę suwaka - podziałka ma być co 1 bo tak są numerowane indeksy w Enum
+        // Sets main scale under the Slider.
+        // Scale is 1 unit because it equals indexes in Enum.
         this.fontSizePicker.setMajorTickUnit(1);
-        // Ma nie być podziałek dodaktowych między głównymi - więc 0
+        // Sets minor scale under the Slider.
+        // There in no need for minor scale under the Slider so it is set to 0 (0 minor ticks between major ticks).
         this.fontSizePicker.setMinorTickCount(0);
 
-        // Ustawia o ile ma przeskakiwać suwak przy sterowaniu klawiszami (strzałkami),
-        // bez tego wciśnięcie strzałki zawsze ustawiałoby pozycję skrajną:
+        // Sets how many units the thumb of the slider moves when click an arrow on keyboard
+        // (without setting that the thumb would go to start or end of the slider when arrow pressed).
         this.fontSizePicker.setBlockIncrement(1);
 
-        // Suwak będzie automatycznie dociągany do najbliższej podziałki
-        // UWAGA: suwakiem dalej można płynnie poruszać myszką, ale po puszczeniu dociągnie się do podziałki)
+        // Sets, that the thumb will be auto pulled to nearest scale.
+        // WARNING: User can still move the thumb smoothly with mouse, but after release it
+        // will be auto pulled to nearest scale.
         this.fontSizePicker.setSnapToTicks(true);
 
-        // Ma pokazywać dużą podziałkę i podpisy pod nią
+        // Sets scale ticks visible.
         this.fontSizePicker.setShowTickMarks(true);
-        this.fontSizePicker.setShowTickLabels(true);    // podpis pod podziałką będzie 1, 2, 3...
+        // Sets labels under scale visible.
+        // WARNING: Labels will be 0, 1, 2.
+        this.fontSizePicker.setShowTickLabels(true);
 
-        // Formatuje podpisy pod podziałką - mają być tekstowe opcje z Enuma.
-        // Metoda setLabelFormatter() wymaga jako argumentu obiektu klasy StringConverter
+        // Formats labels under scale to text (from Enum) instead of numbers.
+        // setLabelFormatter() method demands an object of the StringConverter class.
         this.fontSizePicker.setLabelFormatter(new StringConverter<Double>() {
 
-            // StringCOnverter ma 2 metody.
-            // metoda toString() zamienia przekazany obiekt na String który ma być wyświetlany jako podpis pod podziałką
+            // StringCOnverter has 2 methods.
+            // toString() method transforms passed object to String to be displayed under the scale.
             @Override
             public String toString(Double aDouble) {
-                // Double przekazane do metody (podpis pod podziałką - 0, 1, 2) zapisujemy do i
+                // Double passed to the method (label under scale: 0, 1, 2) is saved to i:
                 int i = aDouble.intValue();
-                // Pobieramy wartość z enumu pod indeksem i i zwracamy jako String
+                // Option from Enum under index i is returned as String:
                 return FontSize.values()[i].toString();
             }
 
@@ -139,10 +172,9 @@ public class OptionsWindowController extends BaseController implements Initializ
             }
         });
 
-
-        // Ustawia wartość suwaka po zmianie
-        // suwak nie będzie się przesuwał płynnie i tylko dociągał do podziałki po puszczeniu (tak działał setSnapToTicks)
-        // zamiast tego będzie skakał tylko do podziałek
+        // Sets position of the thumb of the slider after change.
+        // The thumb won't move swiftly and auto pull to scale after release anymore (like setSnapToTicks() sets)
+        // Instead it will jump from tick to tick.
         fontSizePicker.valueProperty().addListener(
                 (observableValue, number, t1) -> {
                     fontSizePicker.setValue(t1.intValue());

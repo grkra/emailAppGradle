@@ -14,6 +14,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class creates, displays, and closes windows of the application (stages).
+ * It contains active display options of the application.
+ */
 public class ViewFactory {
 
     private EmailManager emailManager;
@@ -28,7 +32,7 @@ public class ViewFactory {
      */
     private ArrayList<Stage> activeStages;
 
-    // View options
+    // View options - contain options selected in Options Window
     /**
      * Holds color theme of the graphical interface. It can be equal to values specified in Enum.
      * <hr></hr>
@@ -45,6 +49,13 @@ public class ViewFactory {
      */
     private FontSize fontSize = FontSize.MEDIUM;
 
+    /**
+     * ViewFactory constructor.
+     * <hr></hr>
+     * Saves passed value to emailManager property.
+     * Initializes list of active stages (windows).
+     * @param emailManager - an object of the class EmailManager.
+     */
     public ViewFactory(EmailManager emailManager) {
         this.emailManager = emailManager;
         this.activeStages = new ArrayList<>();
