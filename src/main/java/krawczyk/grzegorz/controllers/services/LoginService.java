@@ -1,5 +1,7 @@
 package krawczyk.grzegorz.controllers.services;
 
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import krawczyk.grzegorz.EmailManager;
 import krawczyk.grzegorz.controllers.EmailLoginResult;
 import krawczyk.grzegorz.models.EmailAccount;
@@ -8,8 +10,13 @@ import javax.mail.*;
 
 /**
  * Controller responsible for authentication to email provider.
+ * <hr></hr>
+ * It extends Service class which is used to perform tasks on background Threads.
+ * Service class is part of JavaFX and it makes easier to manage multithreading code.
+ * <hr></hr>
+ * Service will return its parameter - EmailLoginResult.
  */
-public class LoginService {
+public class LoginService extends Service<EmailLoginResult> {
 
     EmailAccount emailAccount;
     EmailManager emailManager;
@@ -19,12 +26,24 @@ public class LoginService {
         this.emailManager = emailManager;
     }
 
+    // In LoginWindowController there is loginService.start() method called.
+    // start() method calls createTask() in which all background task code is.
+    @Override
+    protected Task<EmailLoginResult> createTask() {
+        return new Task<EmailLoginResult>() {
+            @Override
+            protected EmailLoginResult call() throws Exception {
+                return login();
+            }
+        };
+    }
+
     /**
      * Method is responsible for connection and authentication to email provider.
      * @return information if login was successful or if there was error as option from Enum.
      * Returns SUCCESS, FAILED_BY_CREDENTIALS, FAILED_BY_NETWORK or FAILED_BY_UNEXPECTED_ERROR
      */
-    public EmailLoginResult login() {
+    private EmailLoginResult login() {
         // It creates new authentication - object which knows how to authenticate on email provider API
         Authenticator authenticator = new Authenticator() {
             @Override
