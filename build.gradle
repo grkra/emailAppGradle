@@ -12,11 +12,8 @@ repositories {
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    implementation 'org.openjfx:javafx-controls:23'
-    implementation 'org.openjfx:javafx-fxml:23'
-    implementation 'org.openjfx:javafx-web:23'
+    implementation 'com.sun.mail:javax.mail:1.6.2'
+    implementation 'com.sun.activation:javax.activation:1.2.0'
 }
 
 javafx {

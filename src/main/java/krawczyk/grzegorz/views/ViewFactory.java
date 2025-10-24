@@ -154,7 +154,6 @@ public class ViewFactory {
 
         Scene scene = new Scene(parent);
         Stage stage = new Stage();
-        System.out.println("STYLES: " + scene.getStylesheets());
         stage.setScene(scene);
         stage.show();
 
