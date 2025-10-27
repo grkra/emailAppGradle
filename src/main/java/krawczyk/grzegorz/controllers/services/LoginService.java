@@ -40,6 +40,7 @@ public class LoginService extends Service<EmailLoginResult> {
 
     /**
      * Method is responsible for connection and authentication to email provider.
+     * If successful login it adds email account to EmailTreeView in EmailManager class.
      * @return information if login was successful or if there was error as option from Enum.
      * Returns SUCCESS, FAILED_BY_CREDENTIALS, FAILED_BY_NETWORK or FAILED_BY_UNEXPECTED_ERROR
      */
@@ -63,6 +64,9 @@ public class LoginService extends Service<EmailLoginResult> {
                     this.emailAccount.getAddress(),
                     this.emailAccount.getPassword());
             emailAccount.setStore(store);
+
+            // It adds this emailAccout to TreeView (it will appear in Main window)
+            emailManager.addEmailAccount(emailAccount);
         } catch (NoSuchProviderException e) {
             e.printStackTrace();
             return EmailLoginResult.FAILED_BY_UNEXPECTED_ERROR;
