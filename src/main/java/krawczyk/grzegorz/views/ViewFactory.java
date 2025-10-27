@@ -21,7 +21,6 @@ import java.util.List;
 public class ViewFactory {
 
     private EmailManager emailManager;
-
     /**
      * List contains active stages of the application (open windows of the application).
      * When new window is opened - it is added to the list.
@@ -31,6 +30,7 @@ public class ViewFactory {
      * change can be applied to all stages saved in the list (all open windows). It is used in updateStyles() method.
      */
     private ArrayList<Stage> activeStages;
+    private boolean mainViewInitialized = false;
 
     // View options - contain options selected in Options Window
     /**
@@ -62,6 +62,17 @@ public class ViewFactory {
     }
 
     /**
+     * Method returns if main view is initialized.
+     * It is used to check if application should open new Main Window or if it is already opened.
+     * <hr></hr>
+     * By default, mainViewInitialized is set to false. showMainWindow() method sets mainViewInitialized to true.
+     * @return true or false.
+     */
+    public boolean isMainViewInitialized() {
+        return mainViewInitialized;
+    }
+
+    /**
      * Method displays login window of the application.
      */
     public void showLoginWindow() {
@@ -79,6 +90,7 @@ public class ViewFactory {
 
         BaseController controller = new MainWindowController(emailManager, this, "MainWindow.fxml");
         initializeStage(controller);
+        mainViewInitialized = true;
     }
 
     /**

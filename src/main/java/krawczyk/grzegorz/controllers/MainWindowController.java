@@ -1,18 +1,20 @@
 package krawczyk.grzegorz.controllers;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeView;
 import javafx.scene.web.WebView;
-import javafx.stage.Stage;
 import krawczyk.grzegorz.EmailManager;
 import krawczyk.grzegorz.views.ViewFactory;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * Controller of Main window of the app.
  */
-public class MainWindowController extends BaseController {
+public class MainWindowController extends BaseController implements Initializable {
 
     @FXML
     private WebView emailWebView;
@@ -21,7 +23,7 @@ public class MainWindowController extends BaseController {
     private TableView<?> emailsTableView;
 
     @FXML
-    private TreeView<?> emailsTreeView;
+    private TreeView<String> emailsTreeView;
 
     /**
      * MainWindowController constructor.
@@ -49,5 +51,27 @@ public class MainWindowController extends BaseController {
     @FXML
     void addAccountAction() {
         this.viewFactory.showLoginWindow();
+    }
+
+    // Method implemented from Initializable interface.
+    // It lets to initialize values of the fields exactly after initialization of an object,
+    // so they are already initialized when window is dislayed.
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        setUpEmailsTreeView();
+    }
+
+    /**
+     * Method sets (initializes) Emails Tree View element when displaying the window.
+     */
+    private void setUpEmailsTreeView() {
+        // It sets EmailTreeItem foldersRoot from EmailManager class as root inside TreeView.
+        // Everything inside the root (all children) are automatically added with the root to the TreeView.
+        this.emailsTreeView.setRoot(emailManager.getFoldersRoot());
+
+        // Root is normal TreeItem - just sent as root. It has no name, so it wouldn't be visible.
+        // Only its children (nest TreeItems) should be visible.
+        // So TreeView is set to not display root element.
+        this.emailsTreeView.setShowRoot(false);
     }
 }

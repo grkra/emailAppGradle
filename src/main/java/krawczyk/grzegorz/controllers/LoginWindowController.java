@@ -1,6 +1,7 @@
 package krawczyk.grzegorz.controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -16,7 +17,7 @@ import java.util.ResourceBundle;
 /**
  * Controller of Login window of the app.
  */
-public class LoginWindowController extends BaseController {
+public class LoginWindowController extends BaseController implements Initializable {
 
     @FXML
     private TextField emailAddressField;
@@ -42,6 +43,9 @@ public class LoginWindowController extends BaseController {
 
     /**
      * Event listener triggered when Login button is clicked.
+     * It is responsible for trying to log in to account.
+     * In case of error - it shows error label.
+     * In case of success - it displays main window and closes login window.
      * Method validates email address and password, and trays to log in to email account.
      */
     @FXML
@@ -72,8 +76,9 @@ public class LoginWindowController extends BaseController {
                 switch (emailLoginResult) {
                     case SUCCESS:
                         System.out.println("login successful: " + emailAccount);
-
-                        this.viewFactory.showMainWindow();
+                        if (!viewFactory.isMainViewInitialized()) {
+                            this.viewFactory.showMainWindow();
+                        }
 
                         // From the class there is no access to the Stage initialized in viewFacotry.showLoginWindow(),
                         // but it has access to eny interface element with id.
@@ -108,5 +113,11 @@ public class LoginWindowController extends BaseController {
         }
 
         return true;
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        emailAddressField.setText("emailKontoDoTestow@wp.pl");
+        passwordField.setText("!QAzxcDE3");
     }
 }
