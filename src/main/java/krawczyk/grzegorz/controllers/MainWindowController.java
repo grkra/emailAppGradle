@@ -2,13 +2,18 @@ package krawczyk.grzegorz.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebView;
 import krawczyk.grzegorz.EmailManager;
+import krawczyk.grzegorz.models.EmailMessage;
+import krawczyk.grzegorz.models.EmailTreeItem;
 import krawczyk.grzegorz.views.ViewFactory;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 /**
@@ -20,10 +25,25 @@ public class MainWindowController extends BaseController implements Initializabl
     private WebView emailWebView;
 
     @FXML
-    private TableView<?> emailsTableView;
+    private TableView<EmailMessage> emailsTableView;
 
     @FXML
     private TreeView<String> emailsTreeView;
+
+    @FXML
+    private TableColumn<EmailMessage, String> senderCol;
+
+    @FXML
+    private TableColumn<EmailMessage, String> subjectCol;
+
+    @FXML
+    private TableColumn<EmailMessage, String> recipientCal;
+
+    @FXML
+    private TableColumn<EmailMessage, Integer> sizeCal;
+
+    @FXML
+    private TableColumn<EmailMessage, Date> dateCol;
 
     /**
      * MainWindowController constructor.
@@ -58,11 +78,13 @@ public class MainWindowController extends BaseController implements Initializabl
     // so they are already initialized when window is dislayed.
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        setUpEmailsTreeView();
+        this.setUpEmailsTreeView();
+        this.setUpEmailsTableView();
+        this.setUpFolderSelection();
     }
 
     /**
-     * Method sets (initializes) Emails Tree View element when displaying the window.
+     * Method sets (initializes) Emails Tree View when displaying the window.
      */
     private void setUpEmailsTreeView() {
         // It sets EmailTreeItem foldersRoot from EmailManager class as root inside TreeView.
@@ -73,5 +95,29 @@ public class MainWindowController extends BaseController implements Initializabl
         // Only its children (nest TreeItems) should be visible.
         // So TreeView is set to not display root element.
         this.emailsTreeView.setShowRoot(false);
+    }
+
+    /**
+     * Method sets (initializes) Emails Table View when displaying the window.
+     */
+    private void setUpEmailsTableView() {
+        senderCol.setCellValueFactory(new PropertyValueFactory<EmailMessage, String>("sender"));
+        subjectCol.setCellValueFactory(new PropertyValueFactory<EmailMessage, String>("subject"));
+        recipientCal.setCellValueFactory(new PropertyValueFactory<EmailMessage, String>("recipient"));
+        sizeCal.setCellValueFactory(new PropertyValueFactory<EmailMessage, Integer>("size"));
+        dateCol.setCellValueFactory(new PropertyValueFactory<EmailMessage, Date>("date"));
+    }
+
+    /**
+     * Method sets (initializes) which folder is selected in Emails Tree View
+     */
+    private void setUpFolderSelection() {
+        emailsTreeView.setOnMouseClicked(event->{
+            EmailTreeItem<String> item = (EmailTreeItem<String>) emailsTreeView.getSelectionModel().getSelectedItem();
+
+            if (item != null) {
+                emailsTableView.setItems(item.getEmailMessages());
+            }
+        });
     }
 }

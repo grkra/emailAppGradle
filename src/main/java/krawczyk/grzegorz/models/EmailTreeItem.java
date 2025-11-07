@@ -74,4 +74,8 @@ public class EmailTreeItem<String> extends TreeItem<String> {
             this.setValue(name);
         }
     }
+
+    public ObservableList<EmailMessage> getEmailMessages() {
+        return emailMessages;
+    }
 }
