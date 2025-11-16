@@ -1,5 +1,6 @@
 package krawczyk.grzegorz.models;
 
+import com.sun.glass.ui.Size;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -18,7 +19,7 @@ public class EmailMessage {
     private SimpleStringProperty subject;
     private SimpleStringProperty sender;
     private SimpleStringProperty recipient;
-    private SimpleIntegerProperty size;
+    private SimpleObjectProperty<SizeInteger> size;
     private SimpleObjectProperty<Date> date;
 
     private boolean wasRead;
@@ -30,7 +31,7 @@ public class EmailMessage {
         this.subject = new SimpleStringProperty(subject);
         this.sender = new SimpleStringProperty(sender);
         this.recipient = new SimpleStringProperty(recipient);
-        this.size = new SimpleIntegerProperty(size);
+        this.size = new SimpleObjectProperty<SizeInteger>(new SizeInteger(size));
         this.date = new SimpleObjectProperty<>(date);
 
         this.wasRead = wasRead;
@@ -49,7 +50,7 @@ public class EmailMessage {
         return recipient.get();
     }
 
-    public Integer getSize() {
+    public SizeInteger getSize() {
         return size.get();
     }
 

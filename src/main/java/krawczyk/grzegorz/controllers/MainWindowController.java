@@ -3,13 +3,16 @@ package krawczyk.grzegorz.controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebView;
+import javafx.util.Callback;
 import krawczyk.grzegorz.EmailManager;
 import krawczyk.grzegorz.models.EmailMessage;
 import krawczyk.grzegorz.models.EmailTreeItem;
+import krawczyk.grzegorz.models.SizeInteger;
 import krawczyk.grzegorz.views.ViewFactory;
 
 import java.net.URL;
@@ -40,7 +43,7 @@ public class MainWindowController extends BaseController implements Initializabl
     private TableColumn<EmailMessage, String> recipientCal;
 
     @FXML
-    private TableColumn<EmailMessage, Integer> sizeCal;
+    private TableColumn<EmailMessage, SizeInteger> sizeCal;
 
     @FXML
     private TableColumn<EmailMessage, Date> dateCol;
@@ -81,10 +84,14 @@ public class MainWindowController extends BaseController implements Initializabl
         this.setUpEmailsTreeView();
         this.setUpEmailsTableView();
         this.setUpFolderSelection();
+        this.setUpBoldRows();
     }
 
     /**
      * Method sets (initializes) Emails Tree View when displaying the window.
+     * Method adds Root to the Email Tree View.
+     * <hr></hr>
+     * Root is populated with email addresses and their folders in EmailManager class.
      */
     private void setUpEmailsTreeView() {
         // It sets EmailTreeItem foldersRoot from EmailManager class as root inside TreeView.
@@ -104,12 +111,13 @@ public class MainWindowController extends BaseController implements Initializabl
         senderCol.setCellValueFactory(new PropertyValueFactory<EmailMessage, String>("sender"));
         subjectCol.setCellValueFactory(new PropertyValueFactory<EmailMessage, String>("subject"));
         recipientCal.setCellValueFactory(new PropertyValueFactory<EmailMessage, String>("recipient"));
-        sizeCal.setCellValueFactory(new PropertyValueFactory<EmailMessage, Integer>("size"));
+        sizeCal.setCellValueFactory(new PropertyValueFactory<EmailMessage, SizeInteger>("size"));
         dateCol.setCellValueFactory(new PropertyValueFactory<EmailMessage, Date>("date"));
     }
 
     /**
-     * Method sets (initializes) which folder is selected in Emails Tree View
+     * Method populates Emails Table View with email messages from folder which is selected in Emails Tree View.
+     * Method contains event listener which reacts on selection of folder in Emails Tree View.
      */
     private void setUpFolderSelection() {
         emailsTreeView.setOnMouseClicked(event->{
@@ -117,6 +125,33 @@ public class MainWindowController extends BaseController implements Initializabl
 
             if (item != null) {
                 emailsTableView.setItems(item.getEmailMessages());
+            }
+        });
+    }
+
+    /**
+     * Method initializes that rows Emails Table View containing emails which were not yet red are bold.
+     */
+    private void setUpBoldRows() {
+
+        // Method requires callback
+        emailsTableView.setRowFactory(new Callback<TableView<EmailMessage>, TableRow<EmailMessage>>() {
+            @Override
+            public TableRow<EmailMessage> call(TableView<EmailMessage> emailMessageTableView) {
+                return new TableRow<EmailMessage>() {
+                    @Override
+                    protected void updateItem(EmailMessage item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        if(item != null) {
+                            if (item.getWasRead()) {
+                                setStyle("");
+                            } else {
+                                setStyle("-fx-font-weight: bold");
+                            }
+                        }
+                    }
+                };
             }
         });
     }
