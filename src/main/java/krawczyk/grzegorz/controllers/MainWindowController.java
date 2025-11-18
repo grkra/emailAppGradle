@@ -10,6 +10,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebView;
 import javafx.util.Callback;
 import krawczyk.grzegorz.EmailManager;
+import krawczyk.grzegorz.controllers.services.MessageRendererService;
 import krawczyk.grzegorz.models.EmailMessage;
 import krawczyk.grzegorz.models.EmailTreeItem;
 import krawczyk.grzegorz.models.SizeInteger;
@@ -48,6 +49,8 @@ public class MainWindowController extends BaseController implements Initializabl
     @FXML
     private TableColumn<EmailMessage, Date> dateCol;
 
+    private MessageRendererService messageRendererService;
+
     /**
      * MainWindowController constructor.
      * <hr></hr>
@@ -85,6 +88,8 @@ public class MainWindowController extends BaseController implements Initializabl
         this.setUpEmailsTableView();
         this.setUpFolderSelection();
         this.setUpBoldRows();
+        this.setUpMessageRendererService();
+        this.setUpMessageSelection();
     }
 
     /**
@@ -105,7 +110,7 @@ public class MainWindowController extends BaseController implements Initializabl
     }
 
     /**
-     * Method sets (initializes) Emails Table View when displaying the window.
+     * Method sets (initializes) columns of Emails Table View when displaying the window.
      */
     private void setUpEmailsTableView() {
         senderCol.setCellValueFactory(new PropertyValueFactory<EmailMessage, String>("sender"));
@@ -116,8 +121,8 @@ public class MainWindowController extends BaseController implements Initializabl
     }
 
     /**
-     * Method populates Emails Table View with email messages from folder which is selected in Emails Tree View.
-     * Method contains event listener which reacts on selection of folder in Emails Tree View.
+     * Method initializes event listener listening for mouse click on any element of Email Tree View.
+     * When user clicks Email Tree View item populates Emails Table View with email messages from selected folder.
      */
     private void setUpFolderSelection() {
         emailsTreeView.setOnMouseClicked(event->{
@@ -130,7 +135,7 @@ public class MainWindowController extends BaseController implements Initializabl
     }
 
     /**
-     * Method initializes that rows Emails Table View containing emails which were not yet red are bold.
+     * Method initializes that rows of Emails Table View containing emails which were not yet red are bold.
      */
     private void setUpBoldRows() {
 
@@ -152,6 +157,34 @@ public class MainWindowController extends BaseController implements Initializabl
                         }
                     }
                 };
+            }
+        });
+    }
+
+    /**
+     * Method creates new MessageRendererService class object.
+     * <hr></hr>
+     * It passes webEngine of Email Web View to the created object.
+     * This way messageRendererService contains WebEngine object of Email Web View window and uses it to display messages.
+     * So displaying messages is controlled in MessageRendererService.
+     */
+    private void setUpMessageRendererService() {
+        this.messageRendererService = new MessageRendererService(this.emailWebView.getEngine());
+    }
+
+    /**
+     * Method initializes event listener listening for mouse click on any Email Table View row.
+     * Email Table View contains EmialMessage object (every row is 1 object).
+     * When user clicks Email Table View item, it sets selected EmailMessage object in messageRendererService and restarts it.
+     * So this way every time user clicks Email Table View it starts new background thread which renders email message (content of the message).
+     * Every rendering is new thread.
+     */
+    private void setUpMessageSelection() {
+        emailsTableView.setOnMouseClicked(mouseEvent -> {
+            EmailMessage emailMessage = emailsTableView.getSelectionModel().getSelectedItem();
+            if (emailMessage != null) {
+                messageRendererService.setEmailMessage(emailMessage);
+                messageRendererService.restart();
             }
         });
     }

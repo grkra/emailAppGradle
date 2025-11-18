@@ -65,7 +65,7 @@ public class LoginWindowController extends BaseController implements Initializab
             loginService.start();
 
             // Service ended task.
-            // setOnSucceeded() method is triggered only if task state is SUCCEEDED
+            // setOnSucceeded() event listener is triggered only if task state is SUCCEEDED
             // (it works only in case of success of background task in Service was ended, and it was success).
             loginService.setOnSucceeded(event -> {
 

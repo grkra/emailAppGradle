@@ -21,9 +21,7 @@ public class EmailMessage {
     private SimpleStringProperty recipient;
     private SimpleObjectProperty<SizeInteger> size;
     private SimpleObjectProperty<Date> date;
-
     private boolean wasRead;
-
     // Message class represent actual email message from provider. This is pointer to email message from provider point of view.
     private Message message;
 

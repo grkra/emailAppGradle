@@ -10,7 +10,8 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 /**
- * Class represents email address (main folder) to be displayed in TreeView in Main Window of the application.
+ * Class represents element to be displayed in Email Tree View in Main Window of the application.
+ * It can be email account (address) as main folder or subfolder in this email account.
  * <hr></hr>
  * Class extends TreeItem class.
  * @param <String>
@@ -75,6 +76,10 @@ public class EmailTreeItem<String> extends TreeItem<String> {
         }
     }
 
+    /**
+     * Method returns list of email messages inside a folder.
+     * @return
+     */
     public ObservableList<EmailMessage> getEmailMessages() {
         return emailMessages;
     }
