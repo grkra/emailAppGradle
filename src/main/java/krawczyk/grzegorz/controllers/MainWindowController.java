@@ -2,13 +2,22 @@ package krawczyk.grzegorz.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebView;
+import javafx.util.Callback;
 import krawczyk.grzegorz.EmailManager;
+import krawczyk.grzegorz.controllers.services.MessageRendererService;
+import krawczyk.grzegorz.models.EmailMessage;
+import krawczyk.grzegorz.models.EmailTreeItem;
+import krawczyk.grzegorz.models.SizeInteger;
 import krawczyk.grzegorz.views.ViewFactory;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 /**
@@ -20,10 +29,27 @@ public class MainWindowController extends BaseController implements Initializabl
     private WebView emailWebView;
 
     @FXML
-    private TableView<?> emailsTableView;
+    private TableView<EmailMessage> emailsTableView;
 
     @FXML
     private TreeView<String> emailsTreeView;
+
+    @FXML
+    private TableColumn<EmailMessage, String> senderCol;
+
+    @FXML
+    private TableColumn<EmailMessage, String> subjectCol;
+
+    @FXML
+    private TableColumn<EmailMessage, String> recipientCal;
+
+    @FXML
+    private TableColumn<EmailMessage, SizeInteger> sizeCal;
+
+    @FXML
+    private TableColumn<EmailMessage, Date> dateCol;
+
+    private MessageRendererService messageRendererService;
 
     /**
      * MainWindowController constructor.
@@ -58,11 +84,19 @@ public class MainWindowController extends BaseController implements Initializabl
     // so they are already initialized when window is dislayed.
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        setUpEmailsTreeView();
+        this.setUpEmailsTreeView();
+        this.setUpEmailsTableView();
+        this.setUpFolderSelection();
+        this.setUpBoldRows();
+        this.setUpMessageRendererService();
+        this.setUpMessageSelection();
     }
 
     /**
-     * Method sets (initializes) Emails Tree View element when displaying the window.
+     * Method sets (initializes) Emails Tree View when displaying the window.
+     * Method adds Root to the Email Tree View.
+     * <hr></hr>
+     * Root is populated with email addresses and their folders in EmailManager class.
      */
     private void setUpEmailsTreeView() {
         // It sets EmailTreeItem foldersRoot from EmailManager class as root inside TreeView.
@@ -73,5 +107,85 @@ public class MainWindowController extends BaseController implements Initializabl
         // Only its children (nest TreeItems) should be visible.
         // So TreeView is set to not display root element.
         this.emailsTreeView.setShowRoot(false);
+    }
+
+    /**
+     * Method sets (initializes) columns of Emails Table View when displaying the window.
+     */
+    private void setUpEmailsTableView() {
+        senderCol.setCellValueFactory(new PropertyValueFactory<EmailMessage, String>("sender"));
+        subjectCol.setCellValueFactory(new PropertyValueFactory<EmailMessage, String>("subject"));
+        recipientCal.setCellValueFactory(new PropertyValueFactory<EmailMessage, String>("recipient"));
+        sizeCal.setCellValueFactory(new PropertyValueFactory<EmailMessage, SizeInteger>("size"));
+        dateCol.setCellValueFactory(new PropertyValueFactory<EmailMessage, Date>("date"));
+    }
+
+    /**
+     * Method initializes event listener listening for mouse click on any element of Email Tree View.
+     * When user clicks Email Tree View item populates Emails Table View with email messages from selected folder.
+     */
+    private void setUpFolderSelection() {
+        emailsTreeView.setOnMouseClicked(event->{
+            EmailTreeItem<String> item = (EmailTreeItem<String>) emailsTreeView.getSelectionModel().getSelectedItem();
+
+            if (item != null) {
+                emailsTableView.setItems(item.getEmailMessages());
+            }
+        });
+    }
+
+    /**
+     * Method initializes that rows of Emails Table View containing emails which were not yet red are bold.
+     */
+    private void setUpBoldRows() {
+
+        // Method requires callback
+        emailsTableView.setRowFactory(new Callback<TableView<EmailMessage>, TableRow<EmailMessage>>() {
+            @Override
+            public TableRow<EmailMessage> call(TableView<EmailMessage> emailMessageTableView) {
+                return new TableRow<EmailMessage>() {
+                    @Override
+                    protected void updateItem(EmailMessage item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        if(item != null) {
+                            if (item.getWasRead()) {
+                                setStyle("");
+                            } else {
+                                setStyle("-fx-font-weight: bold");
+                            }
+                        }
+                    }
+                };
+            }
+        });
+    }
+
+    /**
+     * Method creates new MessageRendererService class object.
+     * <hr></hr>
+     * It passes webEngine of Email Web View to the created object.
+     * This way messageRendererService contains WebEngine object of Email Web View window and uses it to display messages.
+     * So displaying messages is controlled in MessageRendererService.
+     */
+    private void setUpMessageRendererService() {
+        this.messageRendererService = new MessageRendererService(this.emailWebView.getEngine());
+    }
+
+    /**
+     * Method initializes event listener listening for mouse click on any Email Table View row.
+     * Email Table View contains EmialMessage object (every row is 1 object).
+     * When user clicks Email Table View item, it sets selected EmailMessage object in messageRendererService and restarts it.
+     * So this way every time user clicks Email Table View it starts new background thread which renders email message (content of the message).
+     * Every rendering is new thread.
+     */
+    private void setUpMessageSelection() {
+        emailsTableView.setOnMouseClicked(mouseEvent -> {
+            EmailMessage emailMessage = emailsTableView.getSelectionModel().getSelectedItem();
+            if (emailMessage != null) {
+                messageRendererService.setEmailMessage(emailMessage);
+                messageRendererService.restart();
+            }
+        });
     }
 }

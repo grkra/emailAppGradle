@@ -14,7 +14,7 @@ czyli kontroler jest ustawiany w factory-->
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <MenuBar prefHeight="27.0" prefWidth="800.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <menus>
@@ -40,11 +40,11 @@ czyli kontroler jest ustawiany w factory-->
         <TreeView fx:id="emailsTreeView" layoutY="26.0" prefHeight="573.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="27.0" />
         <TableView fx:id="emailsTableView" layoutX="200.0" layoutY="27.0" prefHeight="223.0" prefWidth="600.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
             <columns>
-                <TableColumn prefWidth="120.0" text="Sender" />
-                <TableColumn prefWidth="120.0" text="Subject" />
-                <TableColumn prefWidth="120.0" text="Recipient" />
-                <TableColumn prefWidth="120.0" text="Size" />
-                <TableColumn prefWidth="120.0" text="Date" />
+                <TableColumn fx:id="senderCol" prefWidth="120.0" text="Sender" />
+                <TableColumn fx:id="subjectCol" prefWidth="120.0" text="Subject" />
+                <TableColumn fx:id="recipientCal" prefWidth="120.0" text="Recipient" />
+                <TableColumn fx:id="sizeCal" prefWidth="120.0" text="Size" />
+                <TableColumn fx:id="dateCol" prefWidth="120.0" text="Date" />
             </columns>
         </TableView>
         <WebView fx:id="emailWebView" layoutX="200.0" layoutY="250.0" prefHeight="350.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="250.0" />
