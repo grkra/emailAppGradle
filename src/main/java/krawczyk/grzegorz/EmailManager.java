@@ -129,7 +129,41 @@ public class EmailManager {
             selectedMessage.getMessage().setFlag(Flags.Flag.SEEN, true);
             selecedFolder.decrementMessageCount();
         } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
 
+    /**
+     * Method sets the message as not read:
+     * <ol>
+     *     <li>sets this message wasRead property to false</li>
+     *     <li>sets this message as unseen on a server</li>
+     *     <li>increases number of unread messages in email tree view</li>
+     * </ol>
+     */
+    public void setWasNotRead() {
+        try {
+            selectedMessage.setWasRead(false);
+            selectedMessage.getMessage().setFlag(Flags.Flag.SEEN, false);
+            selecedFolder.incrementMessageCount();
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Method deletes selected message:
+     * <ol>
+     *     <li>sets this message as deleted on a server</li>
+     *     <li>deletes selected message from selected folder in Email Tree View</li>
+     * </ol>
+     */
+    public void deleteSelectedMessage() {
+        try {
+            selectedMessage.getMessage().setFlag(Flags.Flag.DELETED, true);
+            selecedFolder.getEmailMessages().remove(selectedMessage);
+        } catch (MessagingException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -2,10 +2,7 @@ package krawczyk.grzegorz.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebView;
 import javafx.util.Callback;
@@ -24,6 +21,12 @@ import java.util.ResourceBundle;
  * Controller of Main window of the app.
  */
 public class MainWindowController extends BaseController implements Initializable {
+
+    // Options under right-click to mark selected message as unread and to delete selected message.
+    // They have to be added to Email Table View (they are to be used there) - in setUpEmailsTableView() method.
+    // Actions under this options are initialized in initialize() method.
+    private MenuItem markMessageUnreadMenuItem = new MenuItem("Mark as unread");
+    private MenuItem deleteMessageMenuItem = new MenuItem("Delete the message");
 
     @FXML
     private WebView emailWebView;
@@ -91,6 +94,7 @@ public class MainWindowController extends BaseController implements Initializabl
         this.setUpBoldRows();
         this.setUpMessageRendererService();
         this.setUpMessageSelection();
+        this.setUpContextMenus();
     }
 
     /**
@@ -119,6 +123,9 @@ public class MainWindowController extends BaseController implements Initializabl
         recipientCal.setCellValueFactory(new PropertyValueFactory<EmailMessage, String>("recipient"));
         sizeCal.setCellValueFactory(new PropertyValueFactory<EmailMessage, SizeInteger>("size"));
         dateCol.setCellValueFactory(new PropertyValueFactory<EmailMessage, Date>("date"));
+
+        // it adds context menu items under right click (properties created on top) to Email Table View:
+        emailsTableView.setContextMenu(new ContextMenu(markMessageUnreadMenuItem, deleteMessageMenuItem));
     }
 
     /**
@@ -199,6 +206,23 @@ public class MainWindowController extends BaseController implements Initializabl
                 messageRendererService.setEmailMessage(emailMessage);
                 messageRendererService.restart();
             }
+        });
+    }
+
+    /**
+     * Method initializes events triggered by options selected in context menu (under right click).
+     * Options for context menus are added as properties on top of the class
+     * and then initialized in EmailTableView in setUpEmailsTableView()
+     */
+    private void setUpContextMenus() {
+        markMessageUnreadMenuItem.setOnAction(event -> {
+            emailManager.setWasNotRead();
+        });
+
+        deleteMessageMenuItem.setOnAction(event -> {
+            emailManager.deleteSelectedMessage();
+            // it clears Email Web View:
+            emailWebView.getEngine().loadContent("");
         });
     }
 }
