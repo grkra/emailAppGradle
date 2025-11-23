@@ -61,6 +61,7 @@ public class EmailMessage {
     public boolean getWasRead() {
         return wasRead;
     }
+
     public void setWasRead (boolean wasRead) {
         this.wasRead = wasRead;
     }

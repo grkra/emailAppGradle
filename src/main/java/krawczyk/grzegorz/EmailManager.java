@@ -4,9 +4,13 @@ import javafx.scene.control.TreeItem;
 import krawczyk.grzegorz.controllers.services.FetchFolderService;
 import krawczyk.grzegorz.controllers.services.FolderUpdaterService;
 import krawczyk.grzegorz.models.EmailAccount;
+import krawczyk.grzegorz.models.EmailMessage;
 import krawczyk.grzegorz.models.EmailTreeItem;
 
+import javax.mail.Flags;
 import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +18,9 @@ import java.util.List;
  * Class holds information about application state and data.
  */
 public class EmailManager {
+
+    private EmailMessage selectedMessage;
+    private EmailTreeItem<String> selecedFolder;
 
     // Folder handling
     // Email Tree View (used in Main Window) consists of TreeItems.
@@ -90,5 +97,39 @@ public class EmailManager {
      */
     public List<Folder> getFolderList() {
         return this.folderList;
+    }
+
+    public EmailMessage getSelectedMessage() {
+        return selectedMessage;
+    }
+
+    public void setSelectedMessage(EmailMessage selectedMessage) {
+        this.selectedMessage = selectedMessage;
+    }
+
+    public EmailTreeItem<String> getSelecedFolder() {
+        return selecedFolder;
+    }
+
+    public void setSelecedFolder(EmailTreeItem<String> selecedFolder) {
+        this.selecedFolder = selecedFolder;
+    }
+
+    /**
+     * Method sets the message read:
+     * <ol>
+     *     <li>sets this message wasRead property to true</li>
+     *     <li>sets this message as seen on a server</li>
+     *     <li>decreases number of unread messages in email tree view</li>
+     * </ol>
+     */
+    public void setWasRead() {
+        try {
+            selectedMessage.setWasRead(true);
+            selectedMessage.getMessage().setFlag(Flags.Flag.SEEN, true);
+            selecedFolder.decrementMessageCount();
+        } catch (MessagingException e) {
+
+        }
     }
 }

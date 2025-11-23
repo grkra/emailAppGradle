@@ -87,11 +87,25 @@ public class EmailTreeItem<String> extends TreeItem<String> {
         return emailMessage;
     }
 
+    /**
+     * Method increases number of unread messages in the folder in Email Tree View and updates it in View.
+     */
     public void incrementMessageCount() {
         unreadMessagesCount++;
         updateName();
     }
 
+    /**
+     * Method decreases number of unread messages in the folder in Email Tree View and updates it in View.
+     */
+    public void decrementMessageCount() {
+        unreadMessagesCount--;
+        updateName();
+    }
+
+    /**
+     * Method updates name of the folder displayed in the Email Tree View based on number of unread messages it hat folder.
+     */
     private void updateName () {
         if (unreadMessagesCount > 0) {
             this.setValue((String) (this.name + "(" +unreadMessagesCount + ")"));
@@ -102,7 +116,7 @@ public class EmailTreeItem<String> extends TreeItem<String> {
 
     /**
      * Method returns list of email messages inside a folder.
-     * @return
+     * @return ObservableList<EmailMessage> - list of email messages in the folder.
      */
     public ObservableList<EmailMessage> getEmailMessages() {
         return emailMessages;

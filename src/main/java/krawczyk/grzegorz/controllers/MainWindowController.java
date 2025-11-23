@@ -55,9 +55,10 @@ public class MainWindowController extends BaseController implements Initializabl
      * MainWindowController constructor.
      * <hr></hr>
      * It calls BaseController constructor.
+     *
      * @param emailManager - an object of the class EmailManager.
-     * @param viewFactory - an object of the class ViewFactory.
-     * @param fxmlName - a String containing name of a fxml file with the extension.
+     * @param viewFactory  - an object of the class ViewFactory.
+     * @param fxmlName     - a String containing name of a fxml file with the extension.
      */
     public MainWindowController(EmailManager emailManager, ViewFactory viewFactory, String fxmlName) {
         super(emailManager, viewFactory, fxmlName);
@@ -125,10 +126,11 @@ public class MainWindowController extends BaseController implements Initializabl
      * When user clicks Email Tree View item populates Emails Table View with email messages from selected folder.
      */
     private void setUpFolderSelection() {
-        emailsTreeView.setOnMouseClicked(event->{
+        emailsTreeView.setOnMouseClicked(event -> {
             EmailTreeItem<String> item = (EmailTreeItem<String>) emailsTreeView.getSelectionModel().getSelectedItem();
 
             if (item != null) {
+                this.emailManager.setSelecedFolder(item);
                 emailsTableView.setItems(item.getEmailMessages());
             }
         });
@@ -148,7 +150,7 @@ public class MainWindowController extends BaseController implements Initializabl
                     protected void updateItem(EmailMessage item, boolean empty) {
                         super.updateItem(item, empty);
 
-                        if(item != null) {
+                        if (item != null) {
                             if (item.getWasRead()) {
                                 setStyle("");
                             } else {
@@ -175,14 +177,25 @@ public class MainWindowController extends BaseController implements Initializabl
     /**
      * Method initializes event listener listening for mouse click on any Email Table View row.
      * Email Table View contains EmialMessage object (every row is 1 object).
-     * When user clicks Email Table View item, it sets selected EmailMessage object in messageRendererService and restarts it.
-     * So this way every time user clicks Email Table View it starts new background thread which renders email message (content of the message).
-     * Every rendering is new thread.
+     * When user clicks Email Table View item:
+     * <ol>
+     *     <li>
+     *         It sets selected EmailMessage object in messageRendererService and restarts it.
+     *         So this way every time user clicks Email Table View it starts new background thread which renders email message (content of the message).
+     *         Every rendering is new thread.</li>
+     *     <li>
+     *         It sets this message read.
+     *     </li>
+     * </ol>
      */
     private void setUpMessageSelection() {
         emailsTableView.setOnMouseClicked(mouseEvent -> {
             EmailMessage emailMessage = emailsTableView.getSelectionModel().getSelectedItem();
             if (emailMessage != null) {
+                this.emailManager.setSelectedMessage(emailMessage);
+                if (!emailMessage.getWasRead()) {
+                    emailManager.setWasRead();
+                }
                 messageRendererService.setEmailMessage(emailMessage);
                 messageRendererService.restart();
             }
