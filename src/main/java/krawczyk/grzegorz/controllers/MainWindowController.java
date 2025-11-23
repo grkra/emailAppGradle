@@ -2,10 +2,7 @@ package krawczyk.grzegorz.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebView;
 import javafx.util.Callback;
@@ -24,6 +21,12 @@ import java.util.ResourceBundle;
  * Controller of Main window of the app.
  */
 public class MainWindowController extends BaseController implements Initializable {
+
+    // Options under right-click to mark selected message as unread and to delete selected message.
+    // They have to be added to Email Table View (they are to be used there) - in setUpEmailsTableView() method.
+    // Actions under this options are initialized in initialize() method.
+    private MenuItem markMessageUnreadMenuItem = new MenuItem("Mark as unread");
+    private MenuItem deleteMessageMenuItem = new MenuItem("Delete the message");
 
     @FXML
     private WebView emailWebView;
@@ -55,9 +58,10 @@ public class MainWindowController extends BaseController implements Initializabl
      * MainWindowController constructor.
      * <hr></hr>
      * It calls BaseController constructor.
+     *
      * @param emailManager - an object of the class EmailManager.
-     * @param viewFactory - an object of the class ViewFactory.
-     * @param fxmlName - a String containing name of a fxml file with the extension.
+     * @param viewFactory  - an object of the class ViewFactory.
+     * @param fxmlName     - a String containing name of a fxml file with the extension.
      */
     public MainWindowController(EmailManager emailManager, ViewFactory viewFactory, String fxmlName) {
         super(emailManager, viewFactory, fxmlName);
@@ -90,6 +94,7 @@ public class MainWindowController extends BaseController implements Initializabl
         this.setUpBoldRows();
         this.setUpMessageRendererService();
         this.setUpMessageSelection();
+        this.setUpContextMenus();
     }
 
     /**
@@ -118,6 +123,9 @@ public class MainWindowController extends BaseController implements Initializabl
         recipientCal.setCellValueFactory(new PropertyValueFactory<EmailMessage, String>("recipient"));
         sizeCal.setCellValueFactory(new PropertyValueFactory<EmailMessage, SizeInteger>("size"));
         dateCol.setCellValueFactory(new PropertyValueFactory<EmailMessage, Date>("date"));
+
+        // it adds context menu items under right click (properties created on top) to Email Table View:
+        emailsTableView.setContextMenu(new ContextMenu(markMessageUnreadMenuItem, deleteMessageMenuItem));
     }
 
     /**
@@ -125,10 +133,11 @@ public class MainWindowController extends BaseController implements Initializabl
      * When user clicks Email Tree View item populates Emails Table View with email messages from selected folder.
      */
     private void setUpFolderSelection() {
-        emailsTreeView.setOnMouseClicked(event->{
+        emailsTreeView.setOnMouseClicked(event -> {
             EmailTreeItem<String> item = (EmailTreeItem<String>) emailsTreeView.getSelectionModel().getSelectedItem();
 
             if (item != null) {
+                this.emailManager.setSelecedFolder(item);
                 emailsTableView.setItems(item.getEmailMessages());
             }
         });
@@ -148,7 +157,7 @@ public class MainWindowController extends BaseController implements Initializabl
                     protected void updateItem(EmailMessage item, boolean empty) {
                         super.updateItem(item, empty);
 
-                        if(item != null) {
+                        if (item != null) {
                             if (item.getWasRead()) {
                                 setStyle("");
                             } else {
@@ -175,17 +184,45 @@ public class MainWindowController extends BaseController implements Initializabl
     /**
      * Method initializes event listener listening for mouse click on any Email Table View row.
      * Email Table View contains EmialMessage object (every row is 1 object).
-     * When user clicks Email Table View item, it sets selected EmailMessage object in messageRendererService and restarts it.
-     * So this way every time user clicks Email Table View it starts new background thread which renders email message (content of the message).
-     * Every rendering is new thread.
+     * When user clicks Email Table View item:
+     * <ol>
+     *     <li>
+     *         It sets selected EmailMessage object in messageRendererService and restarts it.
+     *         So this way every time user clicks Email Table View it starts new background thread which renders email message (content of the message).
+     *         Every rendering is new thread.</li>
+     *     <li>
+     *         It sets this message read.
+     *     </li>
+     * </ol>
      */
     private void setUpMessageSelection() {
         emailsTableView.setOnMouseClicked(mouseEvent -> {
             EmailMessage emailMessage = emailsTableView.getSelectionModel().getSelectedItem();
             if (emailMessage != null) {
+                this.emailManager.setSelectedMessage(emailMessage);
+                if (!emailMessage.getWasRead()) {
+                    emailManager.setWasRead();
+                }
                 messageRendererService.setEmailMessage(emailMessage);
                 messageRendererService.restart();
             }
+        });
+    }
+
+    /**
+     * Method initializes events triggered by options selected in context menu (under right click).
+     * Options for context menus are added as properties on top of the class
+     * and then initialized in EmailTableView in setUpEmailsTableView()
+     */
+    private void setUpContextMenus() {
+        markMessageUnreadMenuItem.setOnAction(event -> {
+            emailManager.setWasNotRead();
+        });
+
+        deleteMessageMenuItem.setOnAction(event -> {
+            emailManager.deleteSelectedMessage();
+            // it clears Email Web View:
+            emailWebView.getEngine().loadContent("");
         });
     }
 }
