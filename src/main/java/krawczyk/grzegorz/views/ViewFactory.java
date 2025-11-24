@@ -5,10 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import krawczyk.grzegorz.EmailManager;
-import krawczyk.grzegorz.controllers.BaseController;
-import krawczyk.grzegorz.controllers.LoginWindowController;
-import krawczyk.grzegorz.controllers.MainWindowController;
-import krawczyk.grzegorz.controllers.OptionsWindowController;
+import krawczyk.grzegorz.controllers.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,6 +97,16 @@ public class ViewFactory {
         System.out.println("Showing options window.");
 
         BaseController controller = new OptionsWindowController(emailManager, this, "OptionsWindow.fxml");
+        initializeStage(controller);
+    }
+
+    /**
+     * Method displays new message window of the application.
+     */
+    public void showNewMessageWindow() {
+        System.out.println("Showing new message window.");
+
+        BaseController controller = new NewMessageWindowController(emailManager, this, "NewMessageWindow.fxml");
         initializeStage(controller);
     }
 
