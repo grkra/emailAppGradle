@@ -1,5 +1,6 @@
 package krawczyk.grzegorz.models;
 
+import javax.mail.Session;
 import javax.mail.Store;
 import java.util.Properties;
 
@@ -15,6 +16,8 @@ public class EmailAccount {
 
     // for storing and retrieving messages
     private Store store;
+
+    private Session session;
 
     /**
      * EmailAccount constructor.
@@ -62,5 +65,18 @@ public class EmailAccount {
 
     public void setStore(Store store) {
         this.store = store;
+    }
+
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
+    }
+
+    @Override
+    public String toString() {
+        return address;
     }
 }

@@ -57,6 +57,9 @@ public class LoginService extends Service<EmailLoginResult> {
             // It creates new email session with email properties (information about connection from email provider) and authentication.
             Session session = Session.getInstance(this.emailAccount.getProperties(), authenticator);
 
+            // set session to use in EmailSenderService;
+            emailAccount.setSession(session);
+
             // In session Store is created.
             // Store is used to store and retrieve email messages
             Store store = session.getStore("imaps");
