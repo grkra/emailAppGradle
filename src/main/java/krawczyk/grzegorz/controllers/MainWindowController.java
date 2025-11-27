@@ -83,6 +83,15 @@ public class MainWindowController extends BaseController implements Initializabl
         this.viewFactory.showLoginWindow();
     }
 
+
+    /**
+     * Event listener triggered when New message option is selected in File menu.
+     */
+    @FXML
+    void newMessageAction() {
+        this.viewFactory.showNewMessageWindow();
+    }
+
     // Method implemented from Initializable interface.
     // It lets to initialize values of the fields exactly after initialization of an object,
     // so they are already initialized when window is dislayed.

@@ -1,5 +1,7 @@
 package krawczyk.grzegorz;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import krawczyk.grzegorz.controllers.services.FetchFolderService;
 import krawczyk.grzegorz.controllers.services.FolderUpdaterService;
@@ -21,6 +23,11 @@ public class EmailManager {
 
     private EmailMessage selectedMessage;
     private EmailTreeItem<String> selecedFolder;
+
+    /**
+     * List of logged in accounts to use in NewMessageWindow select button
+     */
+    private ObservableList <EmailAccount> emailAccounts = FXCollections.observableArrayList();
 
     // Folder handling
     // Email Tree View (used in Main Window) consists of TreeItems.
@@ -52,15 +59,27 @@ public class EmailManager {
     }
 
     /**
-     * Method adds Email Account as child to Email Tree View root folder (foldersRoot property).
-     * It is used to populate EmailTreeView in Main Window of the application.
-     * Every Email Account added with addEmailAccount() method is displayed in EmailTreeView.
+     * Method:
+     * <ol>
+     *     <li>
+     *         adds Email Account as child to Email Tree View root folder (foldersRoot property).
+     *         It is used to populate EmailTreeView in Main Window of the application.
+     *         Every Email Account added with addEmailAccount() method is displayed in EmailTreeView.
+     *     </li>
+     *     <li>
+     *         adds Email Account to emailAccounts ObservalbleList property.
+     *         emailAccounts is used in NewEmailWindow to select sender account (in select button).
+     *     </li>
+     * </ol>
+     *
      * <hr></hr>
      * Method is called in login() method in LoginService class to fetch data to EmailTreeView.
      *
      * @param emailAccount - object of class EmailAccount
      */
     public void addEmailAccount(EmailAccount emailAccount) {
+        emailAccounts.add(emailAccount);
+
         // EmailTree Element with Email Account is created.
         EmailTreeItem<String> treeItem = new EmailTreeItem<>(emailAccount.getAddress());
 
@@ -78,6 +97,22 @@ public class EmailManager {
         // Email Addres EmailTreeItem is added to the foldersRoot - root of the TreeView.
         // It already contains all children folders fetch by fetchFolderService.
         foldersRoot.getChildren().add(treeItem);
+    }
+
+    /**
+     * Method deletes selected message:
+     * <ol>
+     *     <li>sets this message as deleted on a server</li>
+     *     <li>deletes selected message from selected folder in Email Tree View</li>
+     * </ol>
+     */
+    public void deleteSelectedMessage() {
+        try {
+            selectedMessage.getMessage().setFlag(Flags.Flag.DELETED, true);
+            selecedFolder.getEmailMessages().remove(selectedMessage);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -152,18 +187,10 @@ public class EmailManager {
     }
 
     /**
-     * Method deletes selected message:
-     * <ol>
-     *     <li>sets this message as deleted on a server</li>
-     *     <li>deletes selected message from selected folder in Email Tree View</li>
-     * </ol>
+     * Method returns ObservableList of logged in email accounts.
+     * @return
      */
-    public void deleteSelectedMessage() {
-        try {
-            selectedMessage.getMessage().setFlag(Flags.Flag.DELETED, true);
-            selecedFolder.getEmailMessages().remove(selectedMessage);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
+    public ObservableList<EmailAccount> getEmailAccounts() {
+        return emailAccounts;
     }
 }

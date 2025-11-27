@@ -20,6 +20,7 @@ czyli kontroler jest ustawiany w factory-->
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
+                  <MenuItem mnemonicParsing="false" onAction="#newMessageAction" text="New message" />
                         <MenuItem mnemonicParsing="false" text="Open" />
                   <MenuItem mnemonicParsing="false" onAction="#addAccountAction" text="Add account" />
                         <MenuItem mnemonicParsing="false" text="Close" />
