@@ -21,6 +21,11 @@ public class LoginService extends Service<EmailLoginResult> {
     EmailAccount emailAccount;
     EmailManager emailManager;
 
+    /**
+     * Constructor of the class LoginService.
+     * @param emailAccount
+     * @param emailManager
+     */
     public LoginService(EmailAccount emailAccount, EmailManager emailManager) {
         this.emailAccount = emailAccount;
         this.emailManager = emailManager;

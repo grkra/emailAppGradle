@@ -8,6 +8,7 @@ import krawczyk.grzegorz.controllers.services.FolderUpdaterService;
 import krawczyk.grzegorz.models.EmailAccount;
 import krawczyk.grzegorz.models.EmailMessage;
 import krawczyk.grzegorz.models.EmailTreeItem;
+import krawczyk.grzegorz.views.IconResolver;
 
 import javax.mail.Flags;
 import javax.mail.Folder;
@@ -28,6 +29,8 @@ public class EmailManager {
      * List of logged in accounts to use in NewMessageWindow select button
      */
     private ObservableList <EmailAccount> emailAccounts = FXCollections.observableArrayList();
+
+    private IconResolver iconResolver = new IconResolver();
 
     // Folder handling
     // Email Tree View (used in Main Window) consists of TreeItems.
@@ -82,6 +85,9 @@ public class EmailManager {
 
         // EmailTree Element with Email Account is created.
         EmailTreeItem<String> treeItem = new EmailTreeItem<>(emailAccount.getAddress());
+
+        // It adds icon to email address folder (main folder)
+        treeItem.setGraphic(iconResolver.getIconForFolder(emailAccount.getAddress()));
 
         // Create Service.
         // Whole fetching folders is done in background thread.

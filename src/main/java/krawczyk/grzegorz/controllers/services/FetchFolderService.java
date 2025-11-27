@@ -3,6 +3,7 @@ package krawczyk.grzegorz.controllers.services;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import krawczyk.grzegorz.models.EmailTreeItem;
+import krawczyk.grzegorz.views.IconResolver;
 
 import javax.mail.Folder;
 import javax.mail.Message;
@@ -25,6 +26,7 @@ public class FetchFolderService extends Service<Void> {
 
     private Store store;
     private EmailTreeItem<String> foldersRoot;
+    private IconResolver iconResolver = new IconResolver();
 
     /**
      * List of all folders in the application (objects of class Folder - folders from server side)
@@ -90,6 +92,10 @@ public class FetchFolderService extends Service<Void> {
 
             // It creates new EmailTreeItem from the folder
             EmailTreeItem<String> emailTreeItem = new EmailTreeItem<>(folder.getName());
+
+            // It adds picture (icon) to the folder name
+            emailTreeItem.setGraphic(iconResolver.getIconForFolder(folder.getName()));
+
             // It adds folder to the root folder (emailAddress folder)
             foldersRoot.getChildren().add(emailTreeItem);
             // EmailAddres TreeItem is set to be expanded.
