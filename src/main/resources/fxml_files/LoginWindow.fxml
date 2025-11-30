@@ -13,6 +13,7 @@ czyli kontroler jest ustawiany w factory-->
 
 <AnchorPane prefHeight="400.0"
             prefWidth="500.0"
+            styleClass="container"
             xmlns="http://javafx.com/javafx/23"
             xmlns:fx="http://javafx.com/fxml/1">
     <children>

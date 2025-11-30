@@ -14,40 +14,49 @@ czyli kontroler jest ustawiany w factory-->
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="600.0"
+            prefWidth="800.0"
+            styleClass="container"
+            xmlns="http://javafx.com/javafx/23"
+            xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <MenuBar prefHeight="27.0" prefWidth="800.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <MenuBar prefHeight="27.0" prefWidth="800.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                 AnchorPane.topAnchor="0.0">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                  <MenuItem mnemonicParsing="false" onAction="#newMessageAction" text="New message" />
-                        <MenuItem mnemonicParsing="false" text="Open" />
-                  <MenuItem mnemonicParsing="false" onAction="#addAccountAction" text="Add account" />
-                        <MenuItem mnemonicParsing="false" text="Close" />
+                        <MenuItem mnemonicParsing="false" onAction="#newMessageAction" text="New message"/>
+                        <MenuItem mnemonicParsing="false" text="Open"/>
+                        <MenuItem mnemonicParsing="false" onAction="#addAccountAction" text="Add account"/>
+                        <MenuItem mnemonicParsing="false" text="Close"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#optionsAction" text="Options" />
+                        <MenuItem mnemonicParsing="false" onAction="#optionsAction" text="Options"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="About" />
+                        <MenuItem mnemonicParsing="false" text="About"/>
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
-        <TreeView fx:id="emailsTreeView" layoutY="26.0" prefHeight="573.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="27.0" />
-        <TableView fx:id="emailsTableView" layoutX="200.0" layoutY="27.0" prefHeight="223.0" prefWidth="600.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
+        <TreeView fx:id="emailsTreeView" layoutY="26.0" prefHeight="573.0" prefWidth="200.0"
+                  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="27.0"/>
+        <TableView fx:id="emailsTableView" layoutX="200.0" layoutY="27.0" prefHeight="223.0" prefWidth="600.0"
+                   AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
             <columns>
-                <TableColumn fx:id="senderCol" prefWidth="120.0" text="Sender" />
-                <TableColumn fx:id="subjectCol" prefWidth="120.0" text="Subject" />
-                <TableColumn fx:id="recipientCal" prefWidth="120.0" text="Recipient" />
-                <TableColumn fx:id="sizeCal" prefWidth="120.0" text="Size" />
-                <TableColumn fx:id="dateCol" prefWidth="120.0" text="Date" />
+                <TableColumn fx:id="senderCol" prefWidth="120.0" text="Sender"/>
+                <TableColumn fx:id="subjectCol" prefWidth="120.0" text="Subject"/>
+                <TableColumn fx:id="recipientCal" prefWidth="120.0" text="Recipient"/>
+                <TableColumn fx:id="sizeCal" prefWidth="120.0" text="Size"/>
+                <TableColumn fx:id="dateCol" prefWidth="120.0" text="Date"/>
             </columns>
         </TableView>
-        <WebView fx:id="emailWebView" layoutX="200.0" layoutY="250.0" prefHeight="350.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="250.0" />
+        <WebView fx:id="emailWebView" layoutX="200.0" layoutY="250.0" prefHeight="350.0" prefWidth="600.0"
+                 AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0"
+                 AnchorPane.topAnchor="250.0"/>
     </children>
 </AnchorPane>
