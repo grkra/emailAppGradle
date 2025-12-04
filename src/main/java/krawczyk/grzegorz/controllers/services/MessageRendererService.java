@@ -9,6 +9,7 @@ import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.internet.MimeBodyPart;
 import java.io.IOException;
 
 /**
@@ -107,8 +108,21 @@ public class MessageRendererService extends Service {
             } else if (isMultipartType(bodyPartContentType)) {
                 Multipart multipartSubComponent = (Multipart) bodyPart.getContent();
                 loadMultipart(multipartSubComponent, stringBuffer);
+            } else if (!isTextPlais(bodyPartContentType)) {
+                // handle attachment:
+                MimeBodyPart mimeBodyPart = (MimeBodyPart) bodyPart;
+                this.emailMessage.addAttachment(mimeBodyPart);
             }
         }
+    }
+
+    /**
+     * Method returns true if passed content type matches plain text as content of a message.
+     * @param contentType - Sting containing content type of message.
+     * @return boolean - true if content type is plain text.
+     */
+    private boolean isTextPlais (String contentType) {
+        return contentType.contains("TEXT/PLAIN");
     }
 
     /**
