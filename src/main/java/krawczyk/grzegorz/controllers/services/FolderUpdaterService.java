@@ -51,7 +51,7 @@ public class FolderUpdaterService extends Service {
                             }
                         }
                     } catch (Exception e) {
-
+                        System.out.println(e.getStackTrace());
                     }
                 }
             }

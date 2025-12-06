@@ -138,4 +138,21 @@ public class EmailMessage {
         this.hasAttachemnts = true;
         this.attachmentsList.add(mimeBodyPart);
     }
+
+    /**
+     * Method returns information if the email has any attachments
+     *
+     * @return Boolean - true if the message has attachments, false if hasn't
+     */
+    public boolean getHasAttachments() {
+        return this.hasAttachemnts;
+    }
+
+    /**
+     * Method returns list of attachments of the email
+     * @return List<MimeBodyPart> - list of all attachments
+     */
+    public List<MimeBodyPart> getAttachmentsList() {
+        return attachmentsList;
+    }
 }
