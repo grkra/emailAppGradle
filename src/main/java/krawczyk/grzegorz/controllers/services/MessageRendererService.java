@@ -9,6 +9,7 @@ import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.internet.MimeBodyPart;
 import java.io.IOException;
 
 /**
@@ -40,7 +41,7 @@ public class MessageRendererService extends Service {
      * Constructor of MessageRendererService class.
      * @param webEngine - Object of class WebEngine from WebView object.
      *                  WebEngine is used to render (display) email message set int this class. So it is important
-     *                  to pass WebEngine object managed (containded) by WebView node in main window of the application.
+     *                  to pass WebEngine object managed (contained) by WebView node in main window of the application.
      */
     public MessageRendererService(WebEngine webEngine) {
         this.webEngine = webEngine;
@@ -50,7 +51,7 @@ public class MessageRendererService extends Service {
         // (it works only in case of success of background task in Service was ended, and it was success).
         // So if code from createTask() method is ended successfully it will trigger this event listener which will display message.
         this.setOnSucceeded(event -> {
-            dispalyMessage();
+            displayMessage();
         });
     }
 
@@ -86,15 +87,42 @@ public class MessageRendererService extends Service {
             stringBuffer.append(message.getContent().toString());
         } else if (isMultipartType(contentType)) {
             Multipart multipart = (Multipart) message.getContent();
-            for (int i = multipart.getCount() - 1; i >= 0; i--) {
-                BodyPart bodyPart = multipart.getBodyPart(i);
-                String bodyPartContentType = bodyPart.getContentType();
+            loadMultipart(multipart, stringBuffer);
+        }
+    }
 
-                if (isSimpleType(bodyPartContentType)) {
-                    stringBuffer.append(bodyPart.getContent().toString());
-                }
+    /**
+     * Method recursively loads nested Multipart subcomponents of the passed Multipart to stringBuffer.
+     * @param multipart - object of class Multipart (component of the message or subcomponent of previous Multipart component)
+     * @param stringBuffer - StringBuffer used to load the message before displaying (load parts of the message)
+     * @throws MessagingException
+     * @throws IOException
+     */
+    private void loadMultipart (Multipart multipart, StringBuffer stringBuffer) throws MessagingException, IOException {
+        for (int i = multipart.getCount() - 1; i >= 0; i--) {
+            BodyPart bodyPart = multipart.getBodyPart(i);
+            String bodyPartContentType = bodyPart.getContentType();
+
+            if (isSimpleType(bodyPartContentType)) {
+                stringBuffer.append(bodyPart.getContent().toString());
+            } else if (isMultipartType(bodyPartContentType)) {
+                Multipart multipartSubComponent = (Multipart) bodyPart.getContent();
+                loadMultipart(multipartSubComponent, stringBuffer);
+            } else if (!isTextPlais(bodyPartContentType)) {
+                // handle attachment:
+                MimeBodyPart mimeBodyPart = (MimeBodyPart) bodyPart;
+                this.emailMessage.addAttachment(mimeBodyPart);
             }
         }
+    }
+
+    /**
+     * Method returns true if passed content type matches plain text as content of a message.
+     * @param contentType - Sting containing content type of message.
+     * @return boolean - true if content type is plain text.
+     */
+    private boolean isTextPlais (String contentType) {
+        return contentType.contains("TEXT/PLAIN");
     }
 
     /**
@@ -128,7 +156,7 @@ public class MessageRendererService extends Service {
     /**
      * Method displays email message content in Web View in main window of the application.
      */
-    private void dispalyMessage() {
+    private void displayMessage() {
 
         // Email message content was added (part by part) to stringBuffer.
         // Now it is used to display of the message.
@@ -136,7 +164,7 @@ public class MessageRendererService extends Service {
     }
 
     /**
-     * Method sets passed EmailMessage object as property of MessageRendereService.
+     * Method sets passed EmailMessage object as property of MessageRendererService.
      * It can be rendered by background thread.
      * @param emailMessage - object of class EmailMessage. Email message to be displayed.
      */

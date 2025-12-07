@@ -24,9 +24,10 @@ public class MainWindowController extends BaseController implements Initializabl
 
     // Options under right-click to mark selected message as unread and to delete selected message.
     // They have to be added to Email Table View (they are to be used there) - in setUpEmailsTableView() method.
-    // Actions under this options are initialized in initialize() method.
+    // Actions under these options are initialized in initialize() method.
     private MenuItem markMessageUnreadMenuItem = new MenuItem("Mark as unread");
     private MenuItem deleteMessageMenuItem = new MenuItem("Delete the message");
+    private MenuItem showMessageDetailsMenuItem = new MenuItem("View details");
 
     @FXML
     private WebView emailWebView;
@@ -94,7 +95,7 @@ public class MainWindowController extends BaseController implements Initializabl
 
     // Method implemented from Initializable interface.
     // It lets to initialize values of the fields exactly after initialization of an object,
-    // so they are already initialized when window is dislayed.
+    // so they are already initialized when window is displayed.
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.setUpEmailsTreeView();
@@ -134,7 +135,7 @@ public class MainWindowController extends BaseController implements Initializabl
         dateCol.setCellValueFactory(new PropertyValueFactory<EmailMessage, Date>("date"));
 
         // it adds context menu items under right click (properties created on top) to Email Table View:
-        emailsTableView.setContextMenu(new ContextMenu(markMessageUnreadMenuItem, deleteMessageMenuItem));
+        emailsTableView.setContextMenu(new ContextMenu(markMessageUnreadMenuItem, deleteMessageMenuItem, showMessageDetailsMenuItem));
     }
 
     /**
@@ -225,13 +226,17 @@ public class MainWindowController extends BaseController implements Initializabl
      */
     private void setUpContextMenus() {
         markMessageUnreadMenuItem.setOnAction(event -> {
-            emailManager.setWasNotRead();
+            this.emailManager.setWasNotRead();
         });
 
         deleteMessageMenuItem.setOnAction(event -> {
-            emailManager.deleteSelectedMessage();
+            this.emailManager.deleteSelectedMessage();
             // it clears Email Web View:
-            emailWebView.getEngine().loadContent("");
+            this.emailWebView.getEngine().loadContent("");
+        });
+
+        showMessageDetailsMenuItem.setOnAction(event -> {
+            this.viewFactory.showMessageDetailsWindow();
         });
     }
 }

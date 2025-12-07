@@ -111,6 +111,16 @@ public class ViewFactory {
     }
 
     /**
+     * Method displays messeg details window of the application.
+     */
+    public void showMessageDetailsWindow() {
+        System.out.println("Showing message details window.");
+
+        BaseController controller = new EmailDetailsController(emailManager, this, "EmailDetailsWindow.fxml");
+        initializeStage(controller);
+    }
+
+    /**
      * Method update CSS stylesheet used to display graphical interface of the application.
      * <hr></hr>
      * Method iterates through all opened windows of the application (all Stages saved in updateStyles list),
