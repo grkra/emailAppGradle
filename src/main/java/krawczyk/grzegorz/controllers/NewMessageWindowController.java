@@ -8,19 +8,25 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.web.HTMLEditor;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import krawczyk.grzegorz.EmailManager;
 import krawczyk.grzegorz.controllers.services.EmailSenderService;
 import krawczyk.grzegorz.models.EmailAccount;
 import krawczyk.grzegorz.views.ViewFactory;
 
+import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
  * Controller of new message window of the app.
  */
 public class NewMessageWindowController extends BaseController implements Initializable {
+
+    private List <File> attachments= new ArrayList<>();
 
     @FXML
     private ChoiceBox<EmailAccount> emailAccountChoice;
@@ -65,10 +71,11 @@ public class NewMessageWindowController extends BaseController implements Initia
         // Create Service.
         // Whole sending email process is done in background thread to not freeze UI.
         EmailSenderService emailSenderService = new EmailSenderService(
-                emailAccountChoice.getValue(),
-                subjectTextField.getText(),
-                recipientTextField.getText(),
-                htmlEditor.getHtmlText()
+                this.emailAccountChoice.getValue(),
+                this.subjectTextField.getText(),
+                this.recipientTextField.getText(),
+                this.htmlEditor.getHtmlText(),
+                this.attachments
         );
 
         // Start Service.
@@ -100,6 +107,20 @@ public class NewMessageWindowController extends BaseController implements Initia
                     break;
             }
         });
+    }
+
+    /**
+     * Event listener triggered when Attach button is clicked.
+     * It is responsible for adding attachments to a message.
+     */
+    @FXML
+    void attachButtonAction() {
+        FileChooser fileChooser = new FileChooser();
+        // It opens new window to select file:
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            attachments.add(selectedFile);
+        }
     }
 
     // Method implemented from Initializable interface.
